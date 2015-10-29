@@ -3,7 +3,10 @@ Arduino sketches for use with the Wino Board (www.wino-board.com)
 
 We have the following sketches: 
 
-- [sketch_echo](./sketch_echo) - just a minimal program to test upload of sketches and serial communication
+- [sketch_echo](./sketch_echo) - just a minimal program to test upload of
+sketches and serial communication. Status: it should blink the LED. Can
+be compiled and uploaded, but have not seen it running (i.e. no LED
+blinking).
 
 
 ## todo
