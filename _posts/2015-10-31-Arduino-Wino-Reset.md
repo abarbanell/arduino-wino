@@ -20,7 +20,7 @@ to make everything clear, so here it is:
 - you need to bridge the two pins with a short cable and
 - voilá, you have a reset button: 
 
-![Resetting the Wino](/img/reset.jpeg)
+![Resetting the Wino]({{ site.baseurl }}/img/reset.jpeg)
 
 press it once for a normal reset (restarting the sketch loaded in the flash), or press it twice (quickly) 
 to go back into the boot loader mode.
