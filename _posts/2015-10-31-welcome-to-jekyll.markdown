@@ -20,6 +20,33 @@ print_hi('Tom')
 
 Check out the [Jekyll docs][jekyll] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll’s dedicated Help repository][jekyll-help].
 
+## Notes to self
+
+A few things about how to run this github pages site
+
+## How to set up Jekyll for github pages in a project folder
+
+Problem: To run Jekyll in a project directory you need to set the
+baseurl to the name of your project, but for running locally this
+needs to be empty.
+
+Solution: 
+
+_config.yml should contain the live configuration: 
+
+```
+baseurl: "/arduino-wino" # the subpath of your site, e.g. /blog/
+```
+
+but for running locally you need to override this via command line like so: 
+
+```
+$ bundle exec jekyll serve -b "" -V --drafts
+```
+
+Source for this tip: [https://github.com/jekyll/jekyll/issues/332](https://github.com/jekyll/jekyll/issues/332#issuecomment-18952908)
+
+
 [jekyll]:      http://jekyllrb.com
 [jekyll-gh]:   https://github.com/jekyll/jekyll
 [jekyll-help]: https://github.com/jekyll/jekyll-help
