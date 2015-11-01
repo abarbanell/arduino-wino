@@ -25,6 +25,7 @@ to make everything clear, so here it is:
 press it once for a normal reset (restarting the sketch loaded in the flash), or press it twice (quickly) 
 to go back into the boot loader mode.
 
-Complete Pin layout is [here](http://wino-board.com/index.php/en/wino-board/technical)
+Complete Pin layout is [here](http://wino-board.com/index.php/en/wino-board/technical) on the 
+[Wino Board](http://www.wino-board.com) website.
 
 
