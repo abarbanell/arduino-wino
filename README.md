@@ -8,6 +8,14 @@ sketches and serial communication. Status: it should blink the LED. Can
 be compiled and uploaded, but have not seen it running (i.e. no LED
 blinking).
 
+- [sketch_serial_wifi](./sketch_serial_wifi) - example from [http://www.wino-board.com/index.php/en/code/102-code/wino-examples/serial-wifi](http://www.wino-board.com/index.php/en/code/102-code/wino-examples/serial-wifi) but with small correction
+- [sketch_serial_echo](./sketch_serial_echo) - just a serialUSB connection with echo
+
+## status: not working yet
+
+still trying to figure out how to run any of these sketches :) 
+
+
 
 ## todo
 
