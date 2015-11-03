@@ -4,13 +4,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  delay(500);
+  delay(200);
   digitalWrite(2, HIGH);
-  delay(1000);
+  delay(200);
   digitalWrite(2, LOW);
   delay(1000);
   digitalWrite(2, HIGH);
-  delay(500);
+  delay(1000);
   digitalWrite(2, LOW); 
 
 }
