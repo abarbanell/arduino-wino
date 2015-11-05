@@ -1,19 +1,22 @@
 # arduino-wino
 Arduino sketches for use with the Wino Board (www.wino-board.com)
 
-We have the following sketches: 
+here are  the following sketches: 
 
 - [sketch_echo](./sketch_echo) - just a minimal program to test upload of
-sketches and serial communication. Status: it should blink the LED. Can
-be compiled and uploaded, but have not seen it running (i.e. no LED
-blinking).
+sketches and serial communication. Status: it should blink the LED and echo each character (one short and 
+one long blink for each char) . 
 
-- [sketch_serial_wifi](./sketch_serial_wifi) - example from [http://www.wino-board.com/index.php/en/code/102-code/wino-examples/serial-wifi](http://www.wino-board.com/index.php/en/code/102-code/wino-examples/serial-wifi) but with small correction
-- [sketch_serial_echo](./sketch_serial_echo) - just a serialUSB connection with echo
+- [sketch_serial_wifi](./sketch_serial_wifi) - example from
+[http://www.wino-board.com/index.php/en/code/102-code/wino-examples/serial-wifi](http://www.wino-board.com/index.php/en/code/102-code/wino-examples/serial-wifi)
+but with small correction
 
-## status: not working yet
+- [sketch_serial_echo](./sketch_serial_echo) - just a serialUSB connection
+with echo - same as sketch_echo but without any LED blinking.
 
-still trying to figure out how to run any of these sketches :) 
+# status: working on Linux 15.10
+
+Linux x86_64 Ubuntu 15:10: can be uploaded with the toolset from [Wino Board Quickstart Linux])http://www.wino-board.com/index.php/de/wino-board/quickstart/linux) from 4-Nov-2015 or later.
 
 
 
