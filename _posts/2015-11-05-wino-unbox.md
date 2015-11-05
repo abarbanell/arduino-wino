@@ -17,7 +17,7 @@ module on board. Which would make my set up of monitoring my
 [home garden](http://blog.abarbanell.de/raspberry/2015/08/16/raspberry-arduino/)
  much easier.
 
-Before that I had a [Raspberry Pi](https://www.raspberrypi.org/)
+Until now I have  a [Raspberry Pi](https://www.raspberrypi.org/)
 connected to the internet and an
 Arduino for reading the analog sensors, now my plan is to have all
 of the internet logic on the Wino-Board.
@@ -26,22 +26,24 @@ of the internet logic on the Wino-Board.
 
 # Getting the hardware
 
-I have got m couple of board via the 
+I have got a couple of board via the 
 [kickstarter](https://www.kickstarter.com/projects/krom/wino-board-the-tiny-10-arduino-with-wifi)
 campaign, but there should be a [shop](http://wino-board.com/index.php/en/store)
  opening soon where you should be able to buy. 
 
 # Dev Environment: Linux in my case
 
-Support for development tools is currently best for Windows, folowed by Linux (Intel only). 
-MacOS and ARM Linux are not yet supported.
-
-I have a linux box as development box for this project, runnning
-Ubuntu 15.10. There have been some limitations
-in the Wino-Board toolchain in the first versions, so make sure to get the latest, following the 
-[Linux Quickstart Guid](http://wino-board.com/index.php/en/wino-board/quickstart/linux)
-:nd follow the updates on the [Wino Forum](http://wino-board.com/index.php/en/forum/index).
+I have a development environment on a Linux 15.10 system and could upload the sketches to check 
+everything was working.
 
 Just follow the steps from the [Wino-Board Quickstart guide for
 Linux](http://www.wino-board.com/index.php/en/wino-board/quickstart/linux) and you are all set.
+
+The code for my first trial sketches is [here](https://github.com/abarbanell/arduino-wino), I will add more 
+sketches for this board soon.
+
+# Still to do
+
+The dev environment for MacOS is [confirmed](http://www.wino-board.com/index.php/de/forum/software/9-howto-install-the-wino-board-addin-at-linux?start=18) to work as well now - will try this next.
+
 
