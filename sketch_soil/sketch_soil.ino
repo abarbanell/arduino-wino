@@ -1,6 +1,5 @@
 int powerPin = 12;
 int ledPin = 2; // digital 2
-int sensorPin = 2; //Analog A2
 
 void setup() {
   pinMode(powerPin, OUTPUT);  // Sensor Power
@@ -33,7 +32,7 @@ void measure() {
   digitalWrite(ledPin, HIGH);
   digitalWrite(powerPin, HIGH);
   delay(1000);
-  val = analogRead(sensorPin);
+  val = analogRead(A2);
   digitalWrite(powerPin, LOW);
   digitalWrite(ledPin, LOW);
   sendmessage(val);
