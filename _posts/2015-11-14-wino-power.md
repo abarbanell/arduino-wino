@@ -42,7 +42,7 @@ converting 6-9V DC input to the desired 3.3V output
 
 Picture: 
 
-![Wino Power](/img/wino-power.jpg)
+![Wino Power]({{ site.baseurl }}/img/wino-power.jpg)
 
 # Conclusion
 
