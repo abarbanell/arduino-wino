@@ -38,7 +38,7 @@ supply](http://www.petervis.com/Raspberry_PI/Breadboard_Power_Supply/YwRobot_Bre
 converting 6-9V DC input to the desired 3.3V output
 - 1 wall adapter AC/DC power supply delivering up to 1000mA of 6V DC
 - 2 short breadboard cables (male/male)
-- 1 capacitor of 10uF (although I would have used more if I could, but this was the only size available) 
+- 1 capacitor of 10uF (although I would have used more if I could, but this was the only size at hand) 
 
 Picture: 
 
