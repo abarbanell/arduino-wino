@@ -8,6 +8,7 @@ baseurl: "/arduino-wino" # the subpath of your site, e.g. /blog/
 url: "http://blog.abarbanell.de" # the base hostname & protocol for your site
 twitter_username: tabarbanell
 github_username:  abarbanell
+google_analytics: UA-5236372-2
 
 # Build settings
 markdown: kramdown
