@@ -17,7 +17,7 @@ $ cd arduino-wino/sketch_config
 ```
 
 However, before you compile this sketch you need to create a file 
-"config." with your own config valeus like this: 
+"config.h" with your own config values like this: 
 
 ```
 /*
@@ -47,7 +47,8 @@ If you use an AVR based Arduino (Uno or similar) then you can also
 use a [makefile](https://github.com/sudar/Arduino-Makefile) and inject 
 your config values from the Linux (or MacOS) shell environment into the
 compile process - in this file my config.h would pick up the command line 
-values because of the #ifndef clauses.
+values because the #ifndef clauses will override the values in the code if 
+values are already set.
 
 However, I use a SAMD processor (Atmel ATSAMD21 in the
 [wino-board](http://www.wino-board.com) ) so I could not find a working
