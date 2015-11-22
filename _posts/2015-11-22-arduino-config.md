@@ -33,35 +33,26 @@ You only need the following in your repo:
 
 - a .gitignore file with this entry: 
 
-```
-config.h
-```
+
+        config.h
 
 - a [README.md](https://github.com/abarbanell/arduino-wino/blob/master/sketch_config/README.md) 
 file with the user instruction - not strictly required, but nice to have.  
 
-- your own private "config.h" file with the real values, looking somewhat like this: 
+- your own private "config.h" file with the real values.
 
-```
-/*
- * config variables - this file should not be in source control as it 
- * will show your live credentials.
- */
+        #ifndef WIFI_SSID
+        #define WIFI_SSID "MY-SSID"
+        #endif
+        
+        #ifndef WIFI_PASSWORD
+        #define WIFI_PASSWORD "MY-WIFI-PASSWORD"
+        #endif
 
-#ifndef WIFI_SSID
-#define WIFI_SSID "MY-SSID"
-#endif
-
-#ifndef WIFI_PASSWORD
-#define WIFI_PASSWORD "MY-WIFI-PASSWORD"
-#endif
-```
 
 - your normal Arduino sketch which should have this line somewhere in the beginning: 
 
-```
-#include "config.h"
-```
+        #include "config.h"
 
 The full example is in a [folder in my github
 repository](https://github.com/abarbanell/arduino-wino/tree/master/sketch_config)
