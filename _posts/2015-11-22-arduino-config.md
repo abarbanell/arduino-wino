@@ -58,7 +58,7 @@ The full example is in a [folder in my github
 repository](https://github.com/abarbanell/arduino-wino/tree/master/sketch_config)
 [wino-boards](http://wino-board.com).
 
-If you follow these instructions and flash this sketch to your Arduino. In my case it is a 
+Just follow these instructions and flash this sketch to your Arduino. In my case it is a 
 [wino-board](http://wino-board.com) which has a 32bit SAMD CPU and an ESP8266 WiFi chip all 
 on board already. 
 
