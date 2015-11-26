@@ -42,7 +42,6 @@ values are not yet used, so it actually does not matter which values
 you use...)
 
 Then you can compile and upload the sketch to your arduino as usual and
-
-you should see one of the config values printed over the serial monitor
-whenever you send any byte down to your arduino.
+you should see after a while the IP address printed on the serial monitor
+every 200 ms or so.
 
