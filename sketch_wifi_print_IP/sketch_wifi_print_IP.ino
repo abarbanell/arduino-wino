@@ -1,67 +1,48 @@
-
+#include <wino.h>
 #include "config.h" 
 
-String answer;
-String ip = "";
 void setup() {
-  // put your setup code here, to run once:
-  pinMode(2, OUTPUT);
-  pinMode(13, OUTPUT);
-  pinMode(WIFI_EN_PIN, OUTPUT);
- 
-  Serial.begin(115200); //Opens serial connection to WIFI module
-  SerialUSB.begin(115200); //Opens USB-Serial connection for terminal
- 
+  SerialUSB.begin(9600); //Opens USB-Serial connection for terminal
   delay(5000);
-  SerialUSB.write("Serial interface is ready\r\n");
+  SerialUSB.print("Serial interface is ready\r\n");
 
- 
-  //Preparing Wifi-module
-  digitalWrite(WIFI_EN_PIN, LOW); //turns WIFI module off
-  digitalWrite(13, HIGH); //set module to normal mode
-  delay(100);              // wait a short time
-  digitalWrite(WIFI_EN_PIN, HIGH); //turns WIFI module on
- 
- 
-  //wait until the module is ready
-  while (!Serial.find("ready\r\n")) {}
-  SerialUSB.write("Module is ready\r\n");
-  
-  //Set module to Station mode and wait for reply
-  Serial.println("AT+CWMODE=1");
-  while (!Serial.find("OK\r\n")) {}
-  SerialUSB.println("Module changing to Station mode");
-  delay(100);
- 
-  //Waiting for IP-Address
-  while (!Serial.find("WIFI GOT IP")) {
-    SerialUSB.println("Waiting for IP-Address"); 
-    delay(200);
+  wifi.on();
+  if(wifi.kick()) {
+    SerialUSB.print("ESP8266 turned on \r\n");
+  } else {
+    SerialUSB.print("ESP8266 still offline\r\n"); 
   }
-  SerialUSB.println("got IP-Address");
- 
-  //Reading IP-Address
-  Serial.println("AT+CIFSR");
-    
+
+  SerialUSB.print("FW version: ");
+  SerialUSB.println(wifi.getVersion().c_str());
+  delay(5000);
+
+  if (wifi.setOprToStationSoftAP()) {
+    SerialUSB.print("to station + soft AP ok\r\n");
+  } else {
+    SerialUSB.print("to station + soft ap error\r\n");
+  }
+
+  if (wifi.joinAP(WIFI_SSID, WIFI_PASSWORD)) {
+    SerialUSB.print("Join AP success\r\n");
+    SerialUSB.print("IP: ");
+    SerialUSB.println(wifi.getLocalIP().c_str());
+  } else {
+    SerialUSB.println("Join AP error");
+  }  
+
   
 }
- 
+
+int counter = 0; 
+
 void loop() {
-  while (Serial.available() > 0) {
-    char received = Serial.read();
-    answer.concat(received);
-    if (answer.indexOf("\r\n") > -1 ){
-      if (answer.indexOf("STAIP") > -1) {
-        int starti = answer.indexOf('IP,"') + 1;
-        ip = answer.substring(starti,answer.length() - 3);
-      } 
-      answer=""; 
-    }
-    // Process message when new line character is received
-  }
-  if (ip != "") {
-    SerialUSB.println(ip); 
-    delay(1000);
-  }
+  counter++;
+  SerialUSB.println("--"); 
+  SerialUSB.println(counter);
+  SerialUSB.print("IP: ");
+  SerialUSB.println(wifi.getLocalIP().c_str());
+  
+  delay(5000); 
 }
 
