@@ -2,13 +2,10 @@
 
 This is an example from the [wino-board website](http://www.wino-board.com) how to get the IP from your wino-board.
 
-It uses the ESP8266 AT-commands becauset he wifi library is not yet stable.
+It uses the wifi library which is in early stage. 
 
+WIFI passwords will be injected via a local file config.h - see below.
 
-WIFI passwords will be injected via a local file config.h - but at this
-time they are not yet used.
-
-But anyway here is how to use this sketch: 
 
 # Usage
 
@@ -37,11 +34,9 @@ However, before you compile this sketch you need to create a file
 #endif
 ```
 
-Of course you want to have your own values in here. (Note again: these
-values are not yet used, so it actually does not matter which values
-you use...)
+Of course you want to have your own values in here. 
 
 Then you can compile and upload the sketch to your arduino as usual and
 you should see after a while the IP address printed on the serial monitor
-every 200 ms or so.
+every 5 sec or so.
 
