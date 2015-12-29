@@ -1,3 +1,8 @@
+// Sketch to connect wino-board to wifi and read out the assigned IP address.
+// this will be the basis for more functionality later.
+// all the SerialUSB output is just for debugging and not needed if this logic
+// is used in other sketches.
+
 #include <wino.h>
 #include "config.h" 
 
@@ -30,7 +35,6 @@ void setup() {
   } else {
     SerialUSB.println("Join AP error");
   }  
-
   
 }
 
