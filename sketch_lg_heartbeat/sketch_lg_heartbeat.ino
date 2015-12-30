@@ -35,6 +35,12 @@ void setup() {
   } else {
     SerialUSB.println("Join AP error");
   }  
+
+  if (wifi.disableMUX()) {
+    SerialUSB.println("MUX disabled");
+  } else {
+    SerialUSB.println("MUX disabling failed");
+  }
   
 }
 
@@ -46,6 +52,7 @@ void loop() {
   SerialUSB.println(counter);
   SerialUSB.print("IP: ");
   SerialUSB.println(getIP(true)); // short version of output, cached
+  lg_heartbeat();
   
   delay(5000); 
 }
@@ -75,4 +82,47 @@ String getIP(bool cache) {
   return ip;
 }
 
+/*
+ * lg_heartbeat - send a json message with some data to lg server
+ */
+
+ void lg_heartbeat(void) {
+  uint8_t buffer[1024] = {0};
+
+  SerialUSB.print("host: ");
+  SerialUSB.print(LG_HOST);
+  SerialUSB.print(" - port: ");
+  SerialUSB.println(LG_PORT);
+  
+  if (wifi.createTCP(LG_HOST, LG_PORT)) {
+    SerialUSB.println("tcp connection created");
+  } else {
+    SerialUSB.println("tcp connection failed");
+  }
+
+  String payload = "{ \"host\": \"wino\" }"; 
+  String request = "POST /api/collections/heartbeat?user_key=" + String(LG_API_KEY) + " HTTP/1.1\r\n"
+    + "Host: " + LG_HOST + "\r\n"
+    + "User-Agent: arduino-wino/1.0 \r\n"
+    + "Connection: close \r\n"
+    + "Content-Length: " + payload.length() + "\r\n"
+    + "\r\n"
+    + payload + "\r\n";
+
+  wifi.send((const uint8_t*)request.c_str(), request.length());
+  uint32_t len = wifi.recv(buffer, sizeof(buffer), 10000);
+  if (len > 0) {
+    SerialUSB.print("Received: [");
+    for (uint32_t i=0; i<len; i++) {
+      SerialUSB.print((char)buffer[i]);  
+    }
+    SerialUSB.println("]");
+  }
+  if (wifi.releaseTCP()) {
+    SerialUSB.println("tcp connection closed");
+  } else {
+    SerialUSB.println("tcp connection already closed");
+  }
+
+}
 

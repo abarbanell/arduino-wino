@@ -39,7 +39,11 @@ However, before you compile this sketch you need to create a file
 #endif
 
 #ifndef LG_HOST
-#define LG_HOST "http://my.lg.host"
+#define LG_HOST "my.lg.host.com"
+#endif
+
+#ifndef LG_PORT
+#define LG_PORT 80
 #endif
 
 #ifndef LG_API_KEY
