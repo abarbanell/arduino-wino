@@ -6,6 +6,9 @@
 #include <wino.h>
 #include "config.h" 
 
+int loopcnt = 0;
+int errcnt = 0;
+
 void setup() {
   SerialUSB.begin(9600); //Opens USB-Serial connection for terminal
   delay(5000);
@@ -15,7 +18,8 @@ void setup() {
   if(wifi.kick()) {
     SerialUSB.print("ESP8266 turned on \r\n");
   } else {
-    SerialUSB.print("ESP8266 still offline\r\n"); 
+    SerialUSB.print("ESP8266 still offline\r\n");
+    errcnt++; 
   }
 
   SerialUSB.print("FW version: ");
@@ -26,35 +30,35 @@ void setup() {
     SerialUSB.print("to station + soft AP ok\r\n");
   } else {
     SerialUSB.print("to station + soft ap error\r\n");
+    errcnt++;
   }
 
   if (wifi.joinAP(WIFI_SSID, WIFI_PASSWORD)) {
     SerialUSB.print("Join AP success\r\n");
     SerialUSB.print("IP: ");
-    SerialUSB.println(getIP(true)); // short version of output, cached
+    SerialUSB.println(getIP(true)); // short version of IP, cached
+    SerialUSB.print("MAC: ");
+    SerialUSB.println(gethostname(true)); // short version of hostname, cached
   } else {
     SerialUSB.println("Join AP error");
+    errcnt++;
   }  
 
   if (wifi.disableMUX()) {
     SerialUSB.println("MUX disabled");
   } else {
     SerialUSB.println("MUX disabling failed");
+    errcnt++;
   }
-  
 }
 
-int counter = 0; 
-
 void loop() {
-  counter++;
-  SerialUSB.println("--"); 
-  SerialUSB.println(counter);
-  SerialUSB.print("IP: ");
-  SerialUSB.println(getIP(true)); // short version of output, cached
-  lg_heartbeat();
+  static int counter = 0; 
   
-  delay(5000); 
+  counter++;
+  if ((counter % 5) == 0) lg_heartbeat(); // every 5 loops
+  
+  delay(60000); // one loop per minute 
 }
 
 /* get local IP address. The wifi library gives a strig result like this: 
@@ -83,6 +87,23 @@ String getIP(bool cache) {
 }
 
 /*
+ * build hostname from MAC address 
+ */
+String gethostname(bool cache) {
+  static String mac = "";
+  if (mac.length() && cache) {
+     return mac;
+  }
+  String pattern = "STAMAC,\"";
+  String answer = wifi.getLocalIP().c_str();
+  int starti = answer.indexOf(pattern) + pattern.length();
+  mac = answer.substring(starti, answer.length() -1);  
+  int stopi = mac.indexOf("\"");
+  mac = String("wino-") + mac.substring(0,stopi);
+  mac.replace(":", "");
+  return mac;
+}
+/*
  * lg_heartbeat - send a json message with some data to lg server
  */
 
@@ -100,7 +121,7 @@ String getIP(bool cache) {
     SerialUSB.println("tcp connection failed");
   }
 
-  String payload = "{ \"host\": \"wino\" }"; 
+  String payload = "{ \"host\": \"" + gethostname(true) + "\", \"loopcount\": " + loopcnt + ", \"errcount\": " + errcnt + " }"; 
   String request = "POST /api/collections/heartbeat?user_key=" + String(LG_API_KEY) + " HTTP/1.1\r\n"
     + "Host: " + LG_HOST + "\r\n"
     + "User-Agent: arduino-wino/1.0 \r\n"
