@@ -54,7 +54,10 @@ void setup() {
 
 void loop() {
   static int counter = 0; 
-  
+
+  SerialUSB.print("loops (minutes) since restart: ");
+  SerialUSB.println(loopcnt);
+    
   counter++;
   if ((counter % 5) == 0) lg_heartbeat(); // every 5 loops
   
