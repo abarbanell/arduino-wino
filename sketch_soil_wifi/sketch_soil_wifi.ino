@@ -25,42 +25,29 @@ void serial_setup(void) {
 }
 
 void wifi_setup(void) {
-  wifi.on();
-  if(wifi.kick()) {
-    SerialUSB.print("ESP8266 turned on \r\n");
+  wifi.on(115200);
+  if (wifi.wait(15000)) {
+    SerialUSB.println("WIFI module started.");
   } else {
-    SerialUSB.print("ESP8266 still offline\r\n");
-    errcnt++; 
+    SerialUSB.println("could not start WIFI.");
   }
-
-  SerialUSB.print("FW version: ");
-  SerialUSB.println(wifi.getVersion().c_str());
+  delay(2000),
+  SerialUSB.println(wifi.info());
   delay(5000);
 
-  if (wifi.setOprToStationSoftAP()) {
-    SerialUSB.print("to station + soft AP ok\r\n");
-  } else {
-    SerialUSB.print("to station + soft ap error\r\n");
-    errcnt++;
+  wifi.setMode(0);
+  
+  while (! wifi.join(WIFI_SSID, WIFI_PASSWORD)) {
+    SerialUSB.println('connecting to WIFI...');
+    delay(5000);
   }
-
-  if (wifi.joinAP(WIFI_SSID, WIFI_PASSWORD)) {
-    SerialUSB.print("Join AP success\r\n");
-    SerialUSB.print("IP: ");
-    SerialUSB.println(getIP(true)); // short version of IP, cached
-    SerialUSB.print("MAC: ");
-    SerialUSB.println(gethostname(true)); // short version of hostname, cached
-  } else {
-    SerialUSB.println("Join AP error");
-    errcnt++;
-  }  
-
-  if (wifi.disableMUX()) {
-    SerialUSB.println("MUX disabled");
-  } else {
-    SerialUSB.println("MUX disabling failed");
-    errcnt++;
-  }
+  SerialUSB.println("connected to WIFI.");
+  Serial.println(wifi.getip());
+  SerialUSB.print("IP from my own getip(): ");
+  SerialUSB.println(getIP(true)); // short version of IP, cached
+  SerialUSB.print("MAC from my own gethostname(): ");
+  SerialUSB.println(gethostname(true)); // short version of hostname, cached
+  
 }
 
 void sensor_setup(void) {
@@ -99,7 +86,7 @@ String getIP(bool cache) {
      return ip;
   }
   String pattern = "STAIP,\"";
-  String answer = wifi.getLocalIP().c_str();
+  String answer = wifi.getip().c_str();
   int starti = answer.indexOf(pattern) + pattern.length();
   ip = answer.substring(starti, answer.length() -1);  
   int stopi = ip.indexOf("\"");
@@ -116,7 +103,7 @@ String gethostname(bool cache) {
      return mac;
   }
   String pattern = "STAMAC,\"";
-  String answer = wifi.getLocalIP().c_str();
+  String answer = wifi.getip().c_str();
   int starti = answer.indexOf(pattern) + pattern.length();
   mac = answer.substring(starti, answer.length() -1);  
   int stopi = mac.indexOf("\"");
@@ -164,14 +151,14 @@ String gethostname(bool cache) {
   SerialUSB.println(url);
 
   
-  if (wifi.createTCP(LG_HOST, LG_PORT)) {
+  if (wifi.connect("TCP", LG_HOST, LG_PORT)) {
     SerialUSB.println("tcp connection created");
   } else {
     SerialUSB.println("tcp connection failed");
   }
 
-  wifi.send((const uint8_t*)url.c_str(), url.length());
-  uint32_t len = wifi.recv(buffer, sizeof(buffer), 10000);
+  wifi.write((const uint8_t*)url.c_str(), url.length());
+  uint32_t len = wifi.read(buffer, sizeof(buffer), 10000);
   if (len > 0) {
     SerialUSB.print("Received: [");
     for (uint32_t i=0; i<len; i++) {
@@ -179,7 +166,7 @@ String gethostname(bool cache) {
     }
     SerialUSB.println("]");
   }
-  if (wifi.releaseTCP()) {
+  if (wifi.disconnect()) {
     SerialUSB.println("tcp connection closed");
   } else {
     SerialUSB.println("tcp connection already closed");
