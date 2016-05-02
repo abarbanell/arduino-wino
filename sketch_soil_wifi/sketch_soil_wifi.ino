@@ -19,7 +19,7 @@ void setup(void) {
 }
 
 void serial_setup(void) {
-  SerialUSB.begin(9600); //Opens USB-Serial connection for terminal
+  SerialUSB.begin(115200); //Opens USB-Serial connection for terminal
   delay(5000);
   SerialUSB.print("Serial interface is ready\r\n");
 }
@@ -41,8 +41,8 @@ void wifi_setup(void) {
     SerialUSB.println('connecting to WIFI...');
     delay(5000);
   }
-  SerialUSB.println("connected to WIFI.");
-  Serial.println(wifi.getip());
+  SerialUSB.print("connected to WIFI. IP: ");
+  SerialUSB.println(wifi.getip());
   SerialUSB.print("IP from my own getip(): ");
   SerialUSB.println(getIP(true)); // short version of IP, cached
   SerialUSB.print("MAC from my own gethostname(): ");
@@ -82,15 +82,9 @@ void loop() {
 
 String getIP(bool cache) {
   static String ip = "";
-  if (ip.length() && cache) {
-     return ip;
+  if (!(ip.length() && cache)) {
+    ip = wifi.getip();
   }
-  String pattern = "STAIP,\"";
-  String answer = wifi.getip().c_str();
-  int starti = answer.indexOf(pattern) + pattern.length();
-  ip = answer.substring(starti, answer.length() -1);  
-  int stopi = ip.indexOf("\"");
-  ip = ip.substring(0,stopi);
   return ip;
 }
 
