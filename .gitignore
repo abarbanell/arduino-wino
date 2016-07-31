@@ -1,2 +1,6 @@
 config.h
 
+hardware/*
+
+libraries/*
+
