@@ -6,6 +6,29 @@
 #include <wino.h>
 #include "config.h" 
 
+#define LOG_OUTPUT_DEBUG            (1)
+#define LOG_OUTPUT_DEBUG_PREFIX     (1)
+
+#define logDebug(arg)\
+    do {\
+        if (LOG_OUTPUT_DEBUG)\
+        {\
+            if (LOG_OUTPUT_DEBUG_PREFIX)\
+            {\
+                SerialUSB.print("[LOG Debug: ");\
+                SerialUSB.print((const char*)__FILE__);\
+                SerialUSB.print(",");\
+                SerialUSB.print((unsigned int)__LINE__);\
+                SerialUSB.print(",");\
+                SerialUSB.print((const char*)__FUNCTION__);\
+                SerialUSB.print("] ");\
+            }\
+            SerialUSB.println(arg);\
+        }\
+    } while(0)
+
+
+
 int loopcnt = 0;
 int errcnt = 0;
 
@@ -21,31 +44,35 @@ void setup(void) {
 void serial_setup(void) {
   SerialUSB.begin(115200); //Opens USB-Serial connection for terminal
   delay(5000);
-  SerialUSB.print("Serial interface is ready\r\n");
+  logDebug("serial interface is ready");
 }
 
 void wifi_setup(void) {
   wifi.on(115200);
   if (wifi.wait(15000)) {
-    SerialUSB.println("WIFI module started.");
+    logDebug("wifi_setup(): WIFI module started.");
   } else {
-    SerialUSB.println("could not start WIFI.");
+    logDebug("wifi_setup(): could not start WIFI.");
   }
-  delay(2000),
+  delay(1000),
   SerialUSB.println(wifi.info());
+ 
   delay(5000);
 
   wifi.setMode(0);
-  
+
+  logDebug(wifi.list());
   while (! wifi.join(WIFI_SSID, WIFI_PASSWORD)) {
-    SerialUSB.println('connecting to WIFI...');
-    delay(5000);
+    logDebug('wifi_setup(): connecting to WIFI...');
+    delay(2000);
   }
-  SerialUSB.print("connected to WIFI. IP: ");
+  SerialUSB.print("wifi_setuip(): connected to WIFI. IP: ");
   SerialUSB.println(wifi.getip());
-  SerialUSB.print("IP from my own getip(): ");
-  SerialUSB.println(getIP(true)); // short version of IP, cached
-  SerialUSB.print("MAC from my own gethostname(): ");
+  SerialUSB.print("wifi_setup(): connected to WIFI. MAC: ");
+  SerialUSB.println(wifi.getmac());
+  SerialUSB.print("wifi_setup(): IP from my own getip(): ");
+  SerialUSB.println( getIP(true)); // short version of IP, cached
+  SerialUSB.print("wifi_setup(): gethostname(): ");
   SerialUSB.println(gethostname(true)); // short version of hostname, cached
   
 }
@@ -53,32 +80,22 @@ void wifi_setup(void) {
 void sensor_setup(void) {
   pinMode(powerPin, OUTPUT);  // Sensor Power
   pinMode(ledPin, OUTPUT);  // LED when measuring
+  SerialUSB.println("sensor_setup(): done"); 
 }
   
 
 
 void loop() {
-  SerialUSB.print("loops (minutes) since restart: ");
+  SerialUSB.print("loop():  loops (minutes) since restart: ");
   SerialUSB.println(loopcnt);
     
   loopcnt++;
-  if ((loopcnt % 5) == 0) lg_heartbeat(); // every 5 loops
+  if ((loopcnt % 1) == 0) lg_heartbeat(); // every 1 loops
   if ((loopcnt % 5) == 0) lg_sensor(soil_measure());    // every 5 minutes
   blinkLed(200);
 
   delay(60000); // one loop per minute 
 }
-
-/* get local IP address. The wifi library gives a strig result like this: 
- *  
- *  +CIFSR:APIP,"xxx.xxx.xxx.xxx"
- *  +CIFSR:APMAC,"xx:xx:xx:xx:xx:xx"
- *  +CIFSR:STAIP,"xxx.xxx.xxx.xxx"
- *  +CIFSR:STAMAC,"xx:xx:xx:xx:xx:xx"
- * 
- * we need to cut out the value from the STAIP line (Station IP)
- *
- */
 
 String getIP(bool cache) {
   static String ip = "";
@@ -93,16 +110,10 @@ String getIP(bool cache) {
  */
 String gethostname(bool cache) {
   static String mac = "";
-  if (mac.length() && cache) {
-     return mac;
+  if (!(mac.length() && cache)) {
+    mac = String("wino-") + wifi.getmac();
+    mac.replace(":", "");
   }
-  String pattern = "STAMAC,\"";
-  String answer = wifi.getip().c_str();
-  int starti = answer.indexOf(pattern) + pattern.length();
-  mac = answer.substring(starti, answer.length() -1);  
-  int stopi = mac.indexOf("\"");
-  mac = String("wino-") + mac.substring(0,stopi);
-  mac.replace(":", "");
   return mac;
 }
 /*
@@ -118,7 +129,7 @@ String gethostname(bool cache) {
     + "Content-Length: " + payload.length() + "\r\n"
     + "\r\n"
     + payload + "\r\n";
-  http_post(request, payload);
+  http_post(request);
  }
  
  void lg_sensor(int val) {
@@ -131,39 +142,50 @@ String gethostname(bool cache) {
     + "Content-Length: " + payload.length() + "\r\n"
     + "\r\n"
     + payload + "\r\n";
-  http_post(request, payload);
+  http_post(request);
  }
 
- void http_post(String url, String payload) {
-    uint8_t buffer[1024] = {0};
+ void http_post(String url) {
+  uint8_t buffer[1024] = {0};
 
   SerialUSB.print("host: ");
   SerialUSB.print(LG_HOST);
   SerialUSB.print(" - port: ");
   SerialUSB.println(LG_PORT);
-  SerialUSB.print("url: ");
+  SerialUSB.println("=== HTTP request start ===");
   SerialUSB.println(url);
-
+ 
+  SerialUSB.println("=== HTTP request end ===");
+  SerialUSB.print("url.length(): ");
+  SerialUSB.println(url.length());
   
   if (wifi.connect("TCP", LG_HOST, LG_PORT)) {
-    SerialUSB.println("tcp connection created");
+    logDebug("tcp connection created");
   } else {
-    SerialUSB.println("tcp connection failed");
+    logDebug("tcp connection failed");
   }
 
-  wifi.write((const uint8_t*)url.c_str(), url.length());
+  
+  if (wifi.writeln(url)) {
+    logDebug("request sent with wifi.writeln(String), lrc = true");  
+  } else {
+    logDebug("request sent with wifi.writeln(String), lrc = false");      
+  }
   uint32_t len = wifi.read(buffer, sizeof(buffer), 10000);
   if (len > 0) {
-    SerialUSB.print("Received: [");
+    SerialUSB.print("http_post(): Received: [");
     for (uint32_t i=0; i<len; i++) {
       SerialUSB.print((char)buffer[i]);  
     }
     SerialUSB.println("]");
+    logDebug((char *)buffer);
+  } else {
+    logDebug("<empty response>");
   }
   if (wifi.disconnect()) {
-    SerialUSB.println("tcp connection closed");
+    logDebug("tcp connection closed");
   } else {
-    SerialUSB.println("tcp connection already closed");
+    logDebug("tcp connection was already closed");
   }
 }
 void blinkLed(int ms) {
