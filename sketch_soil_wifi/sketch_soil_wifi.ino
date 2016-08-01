@@ -125,6 +125,7 @@ String gethostname(bool cache) {
   String request = "POST /api/collections/heartbeat?user_key=" + String(LG_API_KEY) + " HTTP/1.1\r\n"
     + "Host: " + LG_HOST + "\r\n"
     + "User-Agent: arduino-wino/1.0 \r\n"
+    + "Content-Type: application/json \r\n"
     + "Connection: close \r\n"
     + "Content-Length: " + payload.length() + "\r\n"
     + "\r\n"
